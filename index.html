@@ -128,7 +128,31 @@
             margin-top: 3px;
         }
 
-        h1 { margin: 0; color: #23A67B; text-transform: uppercase; letter-spacing: 1px; font-size: 26px; font-weight: 800; border-left: 3px solid #ccc; padding-left: 20px; }
+        /* Editable Dashboard Title Styling */
+        h1 { 
+            margin: 0; 
+            color: #23A67B; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-size: 26px; 
+            font-weight: 800; 
+            border-left: 3px solid #ccc; 
+            padding-left: 20px; 
+            cursor: pointer; 
+            transition: opacity 0.2s;
+        }
+        h1:hover { opacity: 0.8; }
+        .title-edit-input {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border: 2px solid #23A67B;
+            border-radius: 4px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            outline: none;
+            text-transform: uppercase;
+        }
         
         /* Controls Right Side (Theme Switch + Logout) */
         .header-controls {
@@ -325,17 +349,44 @@
         /* Grid layout for full screen spread */
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
         
-        /* सेक्शन हेडिंग्स के लिए */
-        .section-title { grid-column: 1 / -1; margin-top: 15px; margin-bottom: 5px; color: #23A67B; font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; font-weight: bold; }
+        /* Editable Section Headings Styling */
+        .section-title { 
+            grid-column: 1 / -1; 
+            margin-top: 15px; 
+            margin-bottom: 5px; 
+            color: #23A67B; 
+            font-size: 18px; 
+            border-bottom: 2px solid var(--border-color); 
+            padding-bottom: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: opacity 0.2s;
+        }
+        .section-title:hover { opacity: 0.8; }
+        .section-edit-input {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border: 2px solid #23A67B;
+            border-radius: 4px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            outline: none;
+            width: 60%;
+        }
         
         /* Themed Cards */
         .card { background: var(--card-bg); padding: 15px 10px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center; border-top: 5px solid #23A67B; transition: transform 0.2s; position: relative; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
         .card.clickable { cursor: pointer; }
         .card.clickable:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(35, 166, 123, 0.25); background-color: var(--table-hover); }
         .card h3 { margin: 0 0 10px 0; color: var(--card-h3); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card p { margin: 0; font-size: 24px; font-weight: bold; color: var(--card-val); }
+        .card p { margin: 0; font-size: 24px; font-weight: bold; color: var(--card-val); cursor: pointer; }
+        .card p:hover { opacity: 0.7; }
         .card p span { font-size: 14px; color: var(--card-h3); font-weight: normal; } 
         
+        /* Card Inline Edit Input */
+        .card-edit-input { width: 90px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #23A67B; border-radius: 4px; background: var(--card-bg); color: var(--text-color); outline: none; }
+
         /* Unified Shadowfax Brand Download Button */
         .download-btn { background-color: #23A67B; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-size: 11px; font-weight: bold; transition: background 0.3s; width: 100%; box-sizing: border-box; }
         .download-btn:hover { background-color: #1a8260; }
@@ -408,7 +459,7 @@
                     <span class="logo-tagline">Think ahead!</span>
                 </div>
             </div>
-            <h1>TPT_NAGER_FM Dashboard</h1>
+            <h1 id="dashboardTitle" onclick="makeTitleEditable()" title="Click to edit dashboard name">TPT_NAGER_FM Dashboard</h1>
         </div>
         
         <!-- Header Controls: Theme Switcher & Logout Button -->
@@ -426,85 +477,106 @@
     </div>
 
     <!-- Overall Metrics Section -->
-    <div class="section-title">📌 Overall Metrics</div>
+    <div class="section-title" id="titleSection1" onclick="makeSectionTitleEditable('titleSection1')" title="Click to edit section name">📌 Overall Metrics</div>
     
     <div class="dashboard">
-        <div class="card clickable" id="cardAwb" title="Click to view full AWB details">
+        <div class="card" title="Click number to edit">
             <h3>Total AWB</h3>
-            <p id="totalAWB">0</p>
+            <p id="totalAWB" onclick="makeCardEditable('totalAWB', 'number')">0</p>
             <button id="downloadAwbBtn" class="download-btn" style="display: none;">⬇ Download AWB Data</button>
         </div>
         
-        <div class="card clickable" id="cardDsr" title="Click to view DRS details">
+        <div class="card" title="Click number to edit">
             <h3>DSR %</h3>
-            <p id="dsrPercent">0</p>
+            <p id="dsrPercent" onclick="makeCardEditable('dsrPercent', 'text')">0</p>
             <button id="downloadDsrBtn" class="download-btn" style="display: none;">⬇ Download DRS Data</button>
         </div>
 
-        <div class="card clickable" id="cardZp" title="Click to view Zero Pick details">
+        <div class="card" title="Click number to edit">
             <h3>ZP %</h3>
-            <p id="zpPercent">0</p>
+            <p id="zpPercent" onclick="makeCardEditable('zpPercent', 'text')">0</p>
             <button id="downloadZpBtn" class="download-btn" style="display: none;">⬇ Download ZP Data</button>
         </div>
         
-        <div class="card">
+        <div class="card" title="Click number to edit">
             <h3>Total Seller</h3>
-            <p id="totalSeller">0</p>
+            <p id="totalSeller" onclick="makeCardEditable('totalSeller', 'number')">0</p>
         </div>
 
-        <div class="card">
+        <div class="card" title="Click number to edit">
             <h3>ZP Sellers</h3>
-            <p id="zpSellersCount">0</p>
+            <p id="zpSellersCount" onclick="makeCardEditable('zpSellersCount', 'number')">0</p>
         </div>
 
-        <div class="card">
+        <div class="card" title="Click number to edit">
             <h3>Unpick count</h3>
-            <p id="unpickCount">0</p>
+            <p id="unpickCount" onclick="makeCardEditable('unpickCount', 'number')">0</p>
         </div>
 
-        <div class="card">
+        <div class="card" title="Click number to edit">
             <h3>Total Rider</h3>
-            <p id="totalRider">0</p>
+            <p id="totalRider" onclick="makeCardEditable('totalRider', 'number')">0</p>
         </div>
     </div>
 
     <!-- C2 Performance Section -->
-    <div class="section-title">⚡ C2 Performance Metrics</div>
+    <div class="section-title" id="titleSection2" onclick="makeSectionTitleEditable('titleSection2')" title="Click to edit section name">⚡ C2 Performance Metrics</div>
     <div class="dashboard">
-        <div class="card">
+        <div class="card" title="Click number to edit">
             <h3>C2 AWB Count</h3>
-            <p id="c2AwbCount">0</p>
+            <p id="c2AwbCount" onclick="makeCardEditable('c2AwbCount', 'number')">0</p>
         </div>
-        <div class="card">
+        <div class="card" title="Click number to edit">
             <h3>C2 Total Sellers</h3>
-            <p id="c2ZpSellersCount">0</p>
+            <p id="c2ZpSellersCount" onclick="makeCardEditable('c2ZpSellersCount', 'number')">0</p>
         </div>
-        <div class="card" style="border-top-color: #f39c12;">
+        <div class="card" style="border-top-color: #f39c12;" title="Click number to edit">
             <h3>C2 ZP Sellers</h3>
-            <p id="c2FilteredZpSellersCount">0</p>
+            <p id="c2FilteredZpSellersCount" onclick="makeCardEditable('c2FilteredZpSellersCount', 'number')">0</p>
         </div>
-        <div class="card">
+        <div class="card" title="Click number to edit">
             <h3>C2 ZP %</h3>
-            <p id="c2ZpPercent">0%</p>
+            <p id="c2ZpPercent" onclick="makeCardEditable('c2ZpPercent', 'text')">0%</p>
         </div>
-        <div class="card">
-            <h3>Total OFP Count</h3>
-            <p id="ofpTotalCount">0</p>
-            <button id="downloadOfpBtn" class="download-btn" style="display: none;">⬇ Download OFP</button>
+    </div>
+
+    <!-- Hub Performance Summary Section -->
+    <div class="section-title" id="titleSection3" onclick="makeSectionTitleEditable('titleSection3')" title="Click to edit section name">🏢 Hub Performance Summary</div>
+    <div class="pivot-container" style="grid-column: 1 / -1; margin-bottom: 20px;">
+        <div class="pivot-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <strong>Hub Name Performance</strong>
+                <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadHubActivity()">⬇ Download Hub Report</button>
+            </div>
+            <input type="text" id="hubSearch" class="pivot-search" placeholder="Search hub..." onkeyup="filterHubTable()">
         </div>
-        <div class="card">
-            <h3>OFP %</h3>
-            <p id="ofpPercentage">0%</p>
-        </div>
-        <div class="card" style="border-top-color: #e74c3c;">
-            <h3>NOT OFP %</h3>
-            <p id="notOfpPercentage">0%</p>
-            <button id="downloadNotOfpBtn" class="download-btn" style="display: none; background-color: #e74c3c;">⬇ Download Not OFP</button>
+        <div class="table-responsive">
+            <table id="hubActivityTable">
+                <thead>
+                    <tr>
+                        <th>Hub Name</th>
+                        <th>Orders</th>
+                        <th>Ofp</th>
+                        <th>Ofp%</th>
+                        <th>Picked</th>
+                        <th>Picked%</th>
+                        <th>Received</th>
+                        <th>Received%</th>
+                        <th>Connected</th>
+                        <th>Connected%</th>
+                        <th>Pending Load</th>
+                        <th>Zero Pick %</th>
+                    </tr>
+                </thead>
+                <tbody id="hubActivityBody">
+                    <tr><td colspan="12" style="text-align: center; color: #777; width: 100%;">Please upload an Excel file to view hub performance data.</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
     
     <!-- Rider Performance Section with Pivot Table & Bottom Riders Side-by-Side -->
-    <div class="section-title">🚴 Rider Performance Analytics</div>
+    <div class="section-title" id="titleSection4" onclick="makeSectionTitleEditable('titleSection4')" title="Click to edit section name">🚴 Rider Performance Analytics</div>
     
     <div class="tables-wrapper" id="tablesWrapper">
         <!-- Best performance Table (Left Side - Filtered ZP < 9%) -->
@@ -520,12 +592,12 @@
                 <table id="riderPivotTable">
                     <thead>
                         <tr>
-                            <th onclick="sortTable(0)">Rider Name ⬍</th>
-                            <th onclick="sortTable(1)">Total Orders ⬍</th>
-                            <th onclick="sortTable(2)">Seller ⬍</th>
-                            <th onclick="sortTable(3)">DSR % ⬍</th>
-                            <th onclick="sortTable(4)">Unpick ⬍</th>
-                            <th onclick="sortTable(5)">ZP % ⬍</th>
+                            <th>Rider Name</th>
+                            <th>Total Orders</th>
+                            <th>Seller</th>
+                            <th>DSR %</th>
+                            <th>Unpick</th>
+                            <th>ZP %</th>
                         </tr>
                     </thead>
                     <tbody id="riderPivotBody"></tbody>
@@ -559,44 +631,9 @@
         </div>
     </div>
 
-    <!-- Hub Performance Summary Section -->
-    <div class="section-title">🏢 Hub Performance Summary</div>
-    <div class="pivot-container" style="grid-column: 1 / -1; margin-top: 15px;">
-        <div class="pivot-header">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <strong>Hub Name Performance (Click Connected to edit)</strong>
-                <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadHubActivity()">⬇ Download Hub Report</button>
-            </div>
-            <input type="text" id="hubSearch" class="pivot-search" placeholder="Search hub..." onkeyup="filterHubTable()">
-        </div>
-        <div class="table-responsive">
-            <table id="hubActivityTable">
-                <thead>
-                    <tr>
-                        <th>Hub Name</th>
-                        <th>Orders</th>
-                        <th>Ofp</th>
-                        <th>Ofp%</th>
-                        <th>Picked</th>
-                        <th>Picked%</th>
-                        <th>Received</th>
-                        <th>Received%</th>
-                        <th>Connected</th>
-                        <th>Connected%</th>
-                        <th>Pending Load</th>
-                        <th>Zero Pick %</th>
-                    </tr>
-                </thead>
-                <tbody id="hubActivityBody">
-                    <tr><td colspan="12" style="text-align: center; color: #777; width: 100%;">Please upload an Excel file to view hub performance data.</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
     <!-- Manual AWB Entry Section -->
     <div class="manual-entry-section">
-        <div class="section-title" style="margin-top:0; border-bottom: none; font-size: 16px;">✍️ Manual AWB Entry & Download</div>
+        <div class="section-title" style="margin-top:0; border-bottom: none; font-size: 16px;" id="titleSection5" onclick="makeSectionTitleEditable('titleSection5')" title="Click to edit section name">✍️ Manual AWB Entry & Download</div>
         <div class="manual-form-group">
             <input type="text" id="manualAwbInput" placeholder="Enter AWB Number and press Enter..." onkeydown="handleAwbKeyDown(event)">
             <button class="action-excel-btn" onclick="addManualEntry()">➕ Add AWB</button>
@@ -650,15 +687,14 @@
     let allDataList = [];
     let dsrDataList = []; 
     let unpickDataList = []; 
-    let ofpDataList = [];
-    let notOfpDataList = [];
     let riderSummaryData = []; 
+    let bottomRiderData = [];
     let hubActivityData = [];
     let manualAwbEntries = [];
     let globalZpPercentage = "0%";
     let sortDirection = false;
 
-    // Login Authentication Logic (Change username & password here)
+    // Login Authentication Logic
     const VALID_USER = "admin";
     const VALID_PASS = "shadowfax123";
 
@@ -694,6 +730,92 @@
         document.getElementById('loginUser').value = '';
         document.getElementById('loginPass').value = '';
         document.getElementById('loginError').innerText = '';
+    }
+
+    // Editable Dashboard Title Logic
+    function makeTitleEditable() {
+        let titleEl = document.getElementById('dashboardTitle');
+        let currentText = titleEl.innerText;
+        titleEl.innerHTML = `<input type="text" class="title-edit-input" value="${currentText}" id="titleInput" onkeydown="handleTitleKeyDown(event)" onblur="saveDashboardTitle()">`;
+        let input = document.getElementById('titleInput');
+        input.focus();
+        input.select();
+    }
+
+    function handleTitleKeyDown(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            saveDashboardTitle();
+        }
+    }
+
+    function saveDashboardTitle() {
+        let input = document.getElementById('titleInput');
+        if (!input) return;
+        let newTitle = input.value.trim() || "TPT_NAGER_FM Dashboard";
+        localStorage.setItem('custom_dashboard_title', newTitle);
+        
+        let titleEl = document.getElementById('dashboardTitle');
+        titleEl.innerText = newTitle;
+    }
+
+    // Editable Section Headings Logic
+    function makeSectionTitleEditable(elementId) {
+        let el = document.getElementById(elementId);
+        let currentText = el.innerText;
+        el.innerHTML = `<input type="text" class="section-edit-input" value="${currentText}" id="sectionInput_${elementId}" onkeydown="handleSectionKeyDown(event, '${elementId}')" onblur="saveSectionTitle('${elementId}')">`;
+        let input = document.getElementById(`sectionInput_${elementId}`);
+        input.focus();
+        input.select();
+    }
+
+    function handleSectionKeyDown(event, elementId) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            saveSectionTitle(elementId);
+        }
+    }
+
+    function saveSectionTitle(elementId) {
+        let input = document.getElementById(`sectionInput_${elementId}`);
+        if (!input) return;
+        let newText = input.value.trim();
+        localStorage.setItem(`custom_section_title_${elementId}`, newText);
+        
+        let el = document.getElementById(elementId);
+        el.innerText = newText;
+    }
+
+    // Editable Card Metrics Logic
+    function makeCardEditable(elementId, type) {
+        let el = document.getElementById(elementId);
+        let rawVal = el.innerText.split('(')[0].trim().replace('%','');
+        
+        el.innerHTML = `<input type="text" class="card-edit-input" value="${rawVal}" id="cardInput_${elementId}" onkeydown="handleCardKeyDown(event, '${elementId}', '${type}')" onblur="saveCardValue('${elementId}', '${type}')">`;
+        let input = document.getElementById(`cardInput_${elementId}`);
+        input.focus();
+        input.select();
+    }
+
+    function handleCardKeyDown(event, elementId, type) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            saveCardValue(elementId, type);
+        }
+    }
+
+    function saveCardValue(elementId, type) {
+        let input = document.getElementById(`cardInput_${elementId}`);
+        if (!input) return;
+        let val = input.value.trim();
+        let el = document.getElementById(elementId);
+
+        if (type === 'number') {
+            let num = parseInt(val, 10);
+            el.innerText = !isNaN(num) ? num : 0;
+        } else {
+            el.innerText = val ? val + (val.includes('%') ? '' : '%') : '0%';
+        }
     }
 
     // Theme Toggle Logic
@@ -870,7 +992,7 @@
         XLSX.writeFile(workbook, "Manual_AWB_Report.xlsx");
     }
 
-    // Inline Editing for Connected Value on Click & Enter
+    // Inline Editing for Hub Connected Value
     function makeCellEditable(cellElement, index) {
         let item = hubActivityData[index];
         let currentVal = item.connected;
@@ -901,6 +1023,40 @@
         renderHubActivityTable(hubActivityData);
     }
 
+    // Inline Editing for Rider Tables (Best / Bad Performance)
+    function makeRiderCellEditable(cellElement, index, type, field) {
+        let item = (type === 'best') ? riderSummaryData[index] : bottomRiderData[index];
+        let currentVal = item[field];
+        
+        cellElement.innerHTML = `<input type="number" class="inline-edit-input" value="${currentVal}" id="riderEdit_${type}_${index}_${field}" onkeydown="handleRiderKeyDown(event, ${index}, '${type}', '${field}')" onblur="saveRiderValue(${index}, '${type}', '${field}')">`;
+        let input = document.getElementById(`riderEdit_${type}_${index}_${field}`);
+        input.focus();
+        input.select();
+    }
+
+    function handleRiderKeyDown(event, index, type, field) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            saveRiderValue(index, type, field);
+        }
+    }
+
+    function saveRiderValue(index, type, field) {
+        let input = document.getElementById(`riderEdit_${type}_${index}_${field}`);
+        if (!input) return;
+        
+        let newVal = parseInt(input.value, 10);
+        if (!isNaN(newVal) && newVal >= 0) {
+            let targetItem = (type === 'best') ? riderSummaryData[index] : bottomRiderData[index];
+            targetItem[field] = newVal;
+            if (field === 'total') {
+                targetItem.dsrPct = targetItem.total > 0 ? parseFloat(((targetItem.dsrCount / targetItem.total) * 100).toFixed(2)) : 0;
+            }
+        }
+        renderRiderTable(riderSummaryData.filter(item => item.zpPct < 9));
+        renderBottomRiderTable(bottomRiderData);
+    }
+
     window.onload = function() {
         let savedTheme = localStorage.getItem('dashboard_theme');
         if (savedTheme === 'dark') {
@@ -909,7 +1065,21 @@
             if(chk) chk.checked = true;
         }
 
-        // Check if already logged in
+        let savedTitle = localStorage.getItem('custom_dashboard_title');
+        if (savedTitle) {
+            let titleEl = document.getElementById('dashboardTitle');
+            if(titleEl) titleEl.innerText = savedTitle;
+        }
+
+        // Load custom section titles if exist
+        for (let i = 1; i <= 5; i++) {
+            let sTitle = localStorage.getItem(`custom_section_title_titleSection${i}`);
+            if (sTitle) {
+                let sEl = document.getElementById(`titleSection${i}`);
+                if (sEl) sEl.innerText = sTitle;
+            }
+        }
+
         let loggedIn = localStorage.getItem('dashboard_logged_in');
         if (loggedIn === 'true') {
             showDashboard();
@@ -974,11 +1144,6 @@
         let c2TotalSellers = new Set();
         let c2FilteredZpSellers = new Set(); 
 
-        zeroPickDataList = [];
-        dsrDataList = []; 
-        unpickDataList = []; 
-        ofpDataList = [];
-        notOfpDataList = [];
         allDataList = data; 
 
         let riderMap = {}; 
@@ -1109,7 +1274,7 @@
 
             let sVal = orderStatusKey && row[orderStatusKey] ? String(row[orderStatusKey]).toLowerCase().trim() : '';
 
-            // Hub Status Mapping as per user specification:
+            // Hub Status Mapping
             const ofpConditions = [
                 'customer initiated delay',
                 'in manifest',
@@ -1191,7 +1356,6 @@
 
             if (isUnpick) {
                 unpickCount++;
-                unpickDataList.push(row);
                 if (sellerName) {
                     riderMap[riderName].unpickSellersSet.add(sellerName);
                 }
@@ -1199,7 +1363,6 @@
             
             if (isZeroPick) {
                 zeroPickCount++;
-                zeroPickDataList.push(row);
                 if (sellerName) {
                     zeroPickSellers.add(sellerName);
                     riderMap[riderName].zeropickSellersSet.add(sellerName);
@@ -1214,16 +1377,9 @@
             if (sellerName && isTargetGroup) {
                 c2TotalSellers.add(sellerName);
             }
-
-            if (ofpConditions.includes(sVal)) {
-                ofpDataList.push(row);
-            } else {
-                notOfpDataList.push(row);
-            }
             
             if (isDsrStatus) {
                 dsrCombinedCount++;
-                dsrDataList.push(row);
                 riderMap[riderName].dsrCount++;
             }
         });
@@ -1250,10 +1406,10 @@
         });
 
         let filteredRiders = riderSummaryData.filter(item => item.zpPct < 9);
-        let bottomRiders = riderSummaryData.filter(item => item.zpPct >= 9);
+        bottomRiderData = riderSummaryData.filter(item => item.zpPct >= 9);
 
         renderRiderTable(filteredRiders);
-        renderBottomRiderTable(bottomRiders);
+        renderBottomRiderTable(bottomRiderData);
         renderHubActivityTable(hubActivityData);
 
         const dsrPercentage = totalRows > 0 ? ((dsrCombinedCount / totalRows) * 100).toFixed(2) : 0;
@@ -1279,50 +1435,11 @@
         document.getElementById('c2FilteredZpSellersCount').innerText = c2ZpCount;
         document.getElementById('c2ZpPercent').innerText = c2ZpPct + "%";
 
-        // OFP% NOT OFP% Calculations against Overall Metrics Total AWB
-        let totalAwbCount = awbs.size > 0 ? awbs.size : totalRows;
-        let ofpMatchCount = ofpDataList.length;
-        let ofpPctVal = totalAwbCount > 0 ? ((ofpMatchCount / totalAwbCount) * 100).toFixed(2) : 0;
-        let notOfpPctVal = (100 - parseFloat(ofpPctVal)).toFixed(2);
-        if (notOfpPctVal < 0) notOfpPctVal = 0;
-
-        document.getElementById('ofpTotalCount').innerText = ofpMatchCount;
-        document.getElementById('ofpPercentage').innerText = ofpPctVal + "%";
-        document.getElementById('notOfpPercentage').innerText = notOfpPctVal + "%";
-
-        const downloadZpBtn = document.getElementById('downloadZpBtn');
-        if (zeroPickDataList.length > 0) {
-            downloadZpBtn.style.display = "inline-block";
-        } else {
-            downloadZpBtn.style.display = "none";
-        }
-
         const downloadAwbBtn = document.getElementById('downloadAwbBtn');
         if (allDataList.length > 0) {
             downloadAwbBtn.style.display = "inline-block";
         } else {
             downloadAwbBtn.style.display = "none";
-        }
-
-        const downloadDsrBtn = document.getElementById('downloadDsrBtn');
-        if (dsrDataList.length > 0) {
-            downloadDsrBtn.style.display = "inline-block";
-        } else {
-            downloadDsrBtn.style.display = "none";
-        }
-
-        const downloadOfpBtn = document.getElementById('downloadOfpBtn');
-        if (ofpDataList.length > 0) {
-            downloadOfpBtn.style.display = "inline-block";
-        } else {
-            downloadOfpBtn.style.display = "none";
-        }
-
-        const downloadNotOfpBtn = document.getElementById('downloadNotOfpBtn');
-        if (notOfpDataList.length > 0) {
-            downloadNotOfpBtn.style.display = "inline-block";
-        } else {
-            downloadNotOfpBtn.style.display = "none";
         }
     }
 
@@ -1336,11 +1453,11 @@
             return;
         }
 
-        dataArray.forEach(item => {
+        dataArray.forEach((item, index) => {
             let tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><strong>${item.name}</strong></td>
-                <td>${item.total}</td>
+                <td class="editable-cell" onclick="makeRiderCellEditable(this, ${index}, 'best', 'total')" title="Click to edit">${item.total}</td>
                 <td>${item.sellersSet.size}</td>
                 <td>${item.dsrPct}%</td>
                 <td>${item.unpickSellersSet.size}</td>
@@ -1360,11 +1477,11 @@
             return;
         }
 
-        dataArray.forEach(item => {
+        dataArray.forEach((item, index) => {
             let tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><strong>${item.name}</strong></td>
-                <td>${item.total}</td>
+                <td class="editable-cell" onclick="makeRiderCellEditable(this, ${index}, 'bad', 'total')" title="Click to edit">${item.total}</td>
                 <td>${item.sellersSet.size}</td>
                 <td>${item.dsrPct}%</td>
                 <td>${item.unpickSellersSet.size}</td>
@@ -1417,7 +1534,6 @@
         let overallReceivedPct = totPicked > 0 ? ((totReceived / totPicked) * 100).toFixed(2) : 0;
         let overallConnectedPct = totPicked > 0 ? ((totConnected / totPicked) * 100).toFixed(2) : 0;
 
-        // Total Row at the bottom
         let totalTr = document.createElement('tr');
         totalTr.className = "total-row";
         totalTr.innerHTML = `
@@ -1447,63 +1563,6 @@
         let query = document.getElementById('hubSearch').value.toLowerCase();
         let filtered = hubActivityData.filter(item => item.name.toLowerCase().includes(query));
         renderHubActivityTable(filtered);
-    }
-
-    function sortTable(columnIndex) {
-        sortDirection = !sortDirection;
-        let filtered = riderSummaryData.filter(item => item.zpPct < 9);
-
-        filtered.sort((a, b) => {
-            let valA, valB;
-            if (columnIndex === 0) { valA = a.name; valB = b.name; }
-            else if (columnIndex === 1) { valA = a.total; valB = b.total; }
-            else if (columnIndex === 2) { valA = a.sellersSet.size; valB = b.sellersSet.size; }
-            else if (columnIndex === 3) { valA = a.dsrPct; valB = b.dsrPct; }
-            else if (columnIndex === 4) { valA = a.unpickSellersSet.size; valB = b.unpickSellersSet.size; }
-            else if (columnIndex === 5) { valA = a.zpPct; valB = b.zpPct; }
-
-            if (valA < valB) return sortDirection ? -1 : 1;
-            if (valA > valB) return sortDirection ? 1 : -1;
-            return 0;
-        });
-
-        renderRiderTable(filtered);
-    }
-
-    function downloadTable(type) {
-        let dataArray = [];
-        let fileName = "";
-        let sheetName = "";
-        
-        if (type === 'best') {
-            let query = document.getElementById('riderSearch').value.toLowerCase();
-            dataArray = riderSummaryData.filter(item => item.zpPct < 9 && item.name.toLowerCase().includes(query));
-            fileName = "Best_Performance_Riders.xlsx";
-            sheetName = "Best Performance";
-        } else {
-            dataArray = riderSummaryData.filter(item => item.zpPct >= 9);
-            fileName = "Bad_Performance_Riders.xlsx";
-            sheetName = "Bad Performance";
-        }
-
-        if (dataArray.length === 0) {
-            alert("No data available to download!");
-            return;
-        }
-
-        let exportData = dataArray.map(item => ({
-            "Rider Name": item.name,
-            "Total Orders": item.total,
-            "Seller Count": item.sellersSet.size,
-            "DSR %": item.dsrPct + "%",
-            "Unpick Count": item.unpickSellersSet.size,
-            "ZP %": item.zpPct + "%"
-        }));
-
-        const worksheet = XLSX.utils.json_to_sheet(exportData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        XLSX.writeFile(workbook, fileName);
     }
 
     function downloadHubActivity() {
@@ -1536,23 +1595,30 @@
         XLSX.writeFile(workbook, "Hub_Performance_Report.xlsx");
     }
 
-    document.getElementById('downloadOfpBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (ofpDataList.length === 0) return;
-        const worksheet = XLSX.utils.json_to_sheet(ofpDataList);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "OFP Data");
-        XLSX.writeFile(workbook, "OFP_Report.xlsx");
-    });
+    function downloadTable(type) {
+        let dataArray = (type === 'best') ? riderSummaryData.filter(item => item.zpPct < 9) : bottomRiderData;
+        let fileName = (type === 'best') ? "Best_Performance_Riders.xlsx" : "Bad_Performance_Riders.xlsx";
+        let sheetName = (type === 'best') ? "Best Performance" : "Bad Performance";
 
-    document.getElementById('downloadNotOfpBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (notOfpDataList.length === 0) return;
-        const worksheet = XLSX.utils.json_to_sheet(notOfpDataList);
+        if (dataArray.length === 0) {
+            alert("No data available to download!");
+            return;
+        }
+
+        let exportData = dataArray.map(item => ({
+            "Rider Name": item.name,
+            "Total Orders": item.total,
+            "Seller Count": item.sellersSet.size,
+            "DSR %": item.dsrPct + "%",
+            "Unpick Count": item.unpickSellersSet.size,
+            "ZP %": item.zpPct + "%"
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Not OFP Data");
-        XLSX.writeFile(workbook, "Not_OFP_Report.xlsx");
-    });
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+        XLSX.writeFile(workbook, fileName);
+    }
 
     function openDetailsWindow(titleName, dataList) {
         if (!dataList || dataList.length === 0) {
@@ -1561,43 +1627,14 @@
         }
 
         let newWindow = window.open("", "_blank", "width=1200,height=700");
-        
         let tableHeaders = Object.keys(dataList[0]);
         let headerHtml = tableHeaders.map(h => `<th>${h}</th>`).join('');
-        
         let rowsHtml = dataList.map(row => {
             let cells = tableHeaders.map(h => `<td>${row[h] !== undefined ? row[h] : ''}</td>`).join('');
             return `<tr>${cells}</tr>`;
         }).join('');
 
-        let htmlContent = `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>${titleName} - Details</title>
-                <style>
-                    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; background: #f4f7f6; }
-                    h2 { color: #23A67B; text-align: center; text-transform: uppercase; }
-                    .count-info { text-align: center; margin-bottom: 15px; font-weight: bold; color: #555; }
-                    table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; }
-                    th, td { padding: 10px 12px; border: 1px solid #ddd; font-size: 13px; text-align: left; }
-                    th { background-color: #23A67B; color: white; position: sticky; top: 0; }
-                    tr:nth-child(even) { background-color: #f9f9f9; }
-                    tr:hover { background-color: #f1f1f1; }
-                </style>
-            </head>
-            <body>
-                <h2>📊 ${titleName} Details</h2>
-                <div class="count-info">Total Records: ${dataList.length}</div>
-                <table>
-                    <thead><tr>${headerHtml}</tr></thead>
-                    <tbody>${rowsHtml}</tbody>
-                </table>
-            </body>
-            </html>
-        `;
-        
+        let htmlContent = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${titleName}</title><style>body{font-family:sans-serif;padding:20px;background:#f4f7f6;}h2{color:#23A67B;text-align:center;}table{width:100%;border-collapse:collapse;background:#fff;}th,td{padding:10px;border:1px solid #ddd;font-size:13px;}th{background:#23A67B;color:#white;}</style></head><body><h2>📊 ${titleName}</h2><table><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
         newWindow.document.write(htmlContent);
         newWindow.document.close();
     }
@@ -1614,15 +1651,6 @@
         openDetailsWindow("Zero Pick Data", zeroPickDataList);
     });
 
-    document.getElementById('downloadZpBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (zeroPickDataList.length === 0) return;
-        const worksheet = XLSX.utils.json_to_sheet(zeroPickDataList);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Zero Pick Data");
-        XLSX.writeFile(workbook, "Zero_Pick_Report.xlsx");
-    });
-
     document.getElementById('downloadAwbBtn').addEventListener('click', function(e) {
         e.stopPropagation();
         if (allDataList.length === 0) return;
@@ -1631,24 +1659,6 @@
         XLSX.utils.book_append_sheet(workbook, worksheet, "All AWB Data");
         XLSX.writeFile(workbook, "Total_AWB_Report.xlsx");
     });
-
-    document.getElementById('downloadDsrBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (dsrDataList.length === 0) return;
-        const worksheet = XLSX.utils.json_to_sheet(dsrDataList);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "DRS Data");
-        XLSX.writeFile(workbook, "DRS_Report.xlsx");
-    });
-
-    function showError(msg) {
-        let errEl = document.getElementById('errorMessage');
-        if(errEl) errEl.innerText = msg;
-        let dashEl = document.getElementById('dashboard');
-        if(dashEl) dashEl.style.display = "none";
-        let twEl = document.getElementById('tablesWrapper');
-        if(twEl) twEl.style.display = "none";
-    }
 </script>
 
 </body>
