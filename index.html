@@ -10,7 +10,7 @@
         /* CSS Variables for Light & Dark Themes */
         :root {
             --bg-color: #f4f7f6;
-            --container-bg: rgba(255, 255, 255, 0.98);
+            --container-bg: rgba(255, 255, 255, 0.95);
             --text-color: #1a252f;
             --card-bg: #fff;
             --card-h3: #555;
@@ -20,12 +20,12 @@
             --table-hover: #f1f9f6;
             --link-section-bg: #fff;
             --upload-bg: #f2fcf8;
-            --watermark-opacity: 0.08;
+            --watermark-opacity: 0.05;
         }
 
         [data-theme="dark"] {
             --bg-color: #12181b;
-            --container-bg: rgba(18, 24, 27, 0.98);
+            --container-bg: rgba(18, 24, 27, 0.95);
             --text-color: #e0e6e3;
             --card-bg: #1e262c;
             --card-h3: #a0aec0;
@@ -35,7 +35,7 @@
             --table-hover: #232d35;
             --link-section-bg: #1e262c;
             --upload-bg: #16201a;
-            --watermark-opacity: 0.15;
+            --watermark-opacity: 0.08;
         }
 
         /* Shadowfax Theme Colors: Primary Green #23A67B */
@@ -50,21 +50,22 @@
             transition: background 0.3s, color 0.3s;
         }
         
-        /* Shadowfax Background Watermark */
+        /* Full Screen Background Shadowfax Watermark Pattern */
         body::before {
-            content: "";
+            content: "SHADOWFAX";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://mma.prnewswire.com/media/2381225/Shadowfax_Logo.jpg');
-            background-size: 50%; 
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: var(--watermark-opacity); 
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 11vw;
+            font-weight: 900;
+            color: #23A67B;
+            opacity: var(--watermark-opacity);
             z-index: -1;
-            transition: opacity 0.3s;
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: 15px;
+            text-transform: uppercase;
         }
 
         /* Full Display Container Layout */
@@ -173,66 +174,79 @@
         input:checked + .slider { background-color: #23A67B; }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* Login Overlay Modal / Container */
-        .login-overlay {
+        /* Dedicated Full-Screen Login Overlay */
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 70vh;
+            z-index: 9999;
         }
         .login-card {
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 40px 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
             border: 1px solid var(--border-color);
             width: 100%;
-            max-width: 380px;
+            max-width: 360px;
             text-align: center;
         }
         .login-card h2 {
             margin-top: 0;
             color: #23A67B;
             text-transform: uppercase;
-            font-size: 22px;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 25px;
+            font-weight: 800;
         }
         .login-form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             text-align: left;
         }
         .login-form-group label {
             display: block;
             font-size: 12px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             color: var(--text-color);
+            text-transform: uppercase;
         }
         .login-form-group input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 14px;
             background: var(--bg-color);
             color: var(--text-color);
             box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .login-form-group input:focus {
+            border-color: #23A67B;
         }
         .login-btn {
             background-color: #23A67B;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
             border-radius: 6px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
             margin-top: 10px;
         }
-        .login-btn:hover { background-color: #1a8260; }
-        .login-error { color: #e74c3c; font-size: 13px; font-weight: bold; margin-top: 10px; }
+        .login-btn:hover { background-color: #1a8260; transform: translateY(-1px); }
+        .login-error { color: #e74c3c; font-size: 13px; font-weight: bold; margin-top: 12px; }
 
         /* Upload Section at the Bottom */
         .upload-section { text-align: center; margin-top: 30px; margin-bottom: 15px; padding: 15px; border: 2px dashed #23A67B; border-radius: 8px; background-color: var(--upload-bg); }
@@ -363,7 +377,25 @@
 </head>
 <body>
 
-<div class="container">
+<!-- Dedicated Full-Screen Login Screen (Only Login visible initially) -->
+<div id="loginScreen">
+    <div class="login-card">
+        <h2>🔐 Hub Login</h2>
+        <div class="login-form-group">
+            <label>Username</label>
+            <input type="text" id="loginUser" placeholder="Enter username">
+        </div>
+        <div class="login-form-group">
+            <label>Password</label>
+            <input type="password" id="loginPass" placeholder="Enter password" onkeydown="handleLoginKeyDown(event)">
+        </div>
+        <button class="login-btn" onclick="handleLogin()">Login to Dashboard</button>
+        <div id="loginError" class="login-error"></div>
+    </div>
+</div>
+
+<!-- Main Dashboard Container (Hidden until logged in) -->
+<div id="mainDashboard" class="container" style="display: none;">
     <!-- Header with Exact Custom Icon, Title and Theme Switcher -->
     <div class="header-section">
         <div class="header-left">
@@ -389,248 +421,227 @@
                 </label>
                 <span>🌙 Dark</span>
             </div>
-            <button id="logoutBtn" class="action-excel-btn" style="background-color: #e74c3c; padding: 6px 12px; font-size: 12px; display: none;" onclick="logout()">🔒 Logout</button>
+            <button id="logoutBtn" class="action-excel-btn" style="background-color: #e74c3c; padding: 6px 12px; font-size: 12px;" onclick="logout()">🔒 Logout</button>
         </div>
     </div>
 
-    <!-- Login Screen Overlay -->
-    <div id="loginScreen" class="login-overlay">
-        <div class="login-card">
-            <h2>🔐 Hub Login</h2>
-            <div class="login-form-group">
-                <label>Username</label>
-                <input type="text" id="loginUser" placeholder="Enter username (e.g. admin)">
-            </div>
-            <div class="login-form-group">
-                <label>Password</label>
-                <input type="password" id="loginPass" placeholder="Enter password" onkeydown="handleLoginKeyDown(event)">
-            </div>
-            <button class="login-btn" onclick="handleLogin()">Login to Dashboard</button>
-            <div id="loginError" class="login-error"></div>
+    <!-- Overall Metrics Section -->
+    <div class="section-title">📌 Overall Metrics</div>
+    
+    <div class="dashboard">
+        <div class="card clickable" id="cardAwb" title="Click to view full AWB details">
+            <h3>Total AWB</h3>
+            <p id="totalAWB">0</p>
+            <button id="downloadAwbBtn" class="download-btn" style="display: none;">⬇ Download AWB Data</button>
+        </div>
+        
+        <div class="card clickable" id="cardDsr" title="Click to view DRS details">
+            <h3>DSR %</h3>
+            <p id="dsrPercent">0</p>
+            <button id="downloadDsrBtn" class="download-btn" style="display: none;">⬇ Download DRS Data</button>
+        </div>
+
+        <div class="card clickable" id="cardZp" title="Click to view Zero Pick details">
+            <h3>ZP %</h3>
+            <p id="zpPercent">0</p>
+            <button id="downloadZpBtn" class="download-btn" style="display: none;">⬇ Download ZP Data</button>
+        </div>
+        
+        <div class="card">
+            <h3>Total Seller</h3>
+            <p id="totalSeller">0</p>
+        </div>
+
+        <div class="card">
+            <h3>ZP Sellers</h3>
+            <p id="zpSellersCount">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Unpick count</h3>
+            <p id="unpickCount">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Rider</h3>
+            <p id="totalRider">0</p>
         </div>
     </div>
 
-    <!-- Main Dashboard Container (Hidden until logged in) -->
-    <div id="mainDashboard" style="display: none;">
-        
-        <!-- Overall Metrics Section -->
-        <div class="section-title">📌 Overall Metrics</div>
-        
-        <div class="dashboard">
-            <div class="card clickable" id="cardAwb" title="Click to view full AWB details">
-                <h3>Total AWB</h3>
-                <p id="totalAWB">0</p>
-                <button id="downloadAwbBtn" class="download-btn" style="display: none;">⬇ Download AWB Data</button>
-            </div>
-            
-            <div class="card clickable" id="cardDsr" title="Click to view DRS details">
-                <h3>DSR %</h3>
-                <p id="dsrPercent">0</p>
-                <button id="downloadDsrBtn" class="download-btn" style="display: none;">⬇ Download DRS Data</button>
-            </div>
-
-            <div class="card clickable" id="cardZp" title="Click to view Zero Pick details">
-                <h3>ZP %</h3>
-                <p id="zpPercent">0</p>
-                <button id="downloadZpBtn" class="download-btn" style="display: none;">⬇ Download ZP Data</button>
-            </div>
-            
-            <div class="card">
-                <h3>Total Seller</h3>
-                <p id="totalSeller">0</p>
-            </div>
-
-            <div class="card">
-                <h3>ZP Sellers</h3>
-                <p id="zpSellersCount">0</p>
-            </div>
-
-            <div class="card">
-                <h3>Unpick count</h3>
-                <p id="unpickCount">0</p>
-            </div>
-
-            <div class="card">
-                <h3>Total Rider</h3>
-                <p id="totalRider">0</p>
-            </div>
+    <!-- C2 Performance Section -->
+    <div class="section-title">⚡ C2 Performance Metrics</div>
+    <div class="dashboard">
+        <div class="card">
+            <h3>C2 AWB Count</h3>
+            <p id="c2AwbCount">0</p>
         </div>
-
-        <!-- C2 Performance Section -->
-        <div class="section-title">⚡ C2 Performance Metrics</div>
-        <div class="dashboard">
-            <div class="card">
-                <h3>C2 AWB Count</h3>
-                <p id="c2AwbCount">0</p>
-            </div>
-            <div class="card">
-                <h3>C2 Total Sellers</h3>
-                <p id="c2ZpSellersCount">0</p>
-            </div>
-            <div class="card" style="border-top-color: #f39c12;">
-                <h3>C2 ZP Sellers</h3>
-                <p id="c2FilteredZpSellersCount">0</p>
-            </div>
-            <div class="card">
-                <h3>C2 ZP %</h3>
-                <p id="c2ZpPercent">0%</p>
-            </div>
-            <div class="card">
-                <h3>Total OFP Count</h3>
-                <p id="ofpTotalCount">0</p>
-                <button id="downloadOfpBtn" class="download-btn" style="display: none;">⬇ Download OFP</button>
-            </div>
-            <div class="card">
-                <h3>OFP %</h3>
-                <p id="ofpPercentage">0%</p>
-            </div>
-            <div class="card" style="border-top-color: #e74c3c;">
-                <h3>NOT OFP %</h3>
-                <p id="notOfpPercentage">0%</p>
-                <button id="downloadNotOfpBtn" class="download-btn" style="display: none; background-color: #e74c3c;">⬇ Download Not OFP</button>
-            </div>
+        <div class="card">
+            <h3>C2 Total Sellers</h3>
+            <p id="c2ZpSellersCount">0</p>
         </div>
-        
-        <!-- Rider Performance Section -->
-        <div class="section-title">🚴 Rider Performances </div>
-        
-        <div class="tables-wrapper" id="tablesWrapper">
-            <!-- Best performance Table (Left Side - Filtered ZP < 9%) -->
-            <div class="pivot-container">
-                <div class="pivot-header">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <strong>Best performance</strong>
-                        <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadTable('best')">⬇ Download</button>
-                    </div>
-                    <input type="text" id="riderSearch" class="pivot-search" placeholder="Search rider..." onkeyup="filterRiderTable()">
-                </div>
-                <div class="table-responsive">
-                    <table id="riderPivotTable">
-                        <thead>
-                            <tr>
-                                <th onclick="sortTable(0)">Rider Name ⬍</th>
-                                <th onclick="sortTable(1)">Total Orders ⬍</th>
-                                <th onclick="sortTable(2)">Seller ⬍</th>
-                                <th onclick="sortTable(3)">DSR % ⬍</th>
-                                <th onclick="sortTable(4)">Unpick ⬍</th>
-                                <th onclick="sortTable(5)">ZP % ⬍</th>
-                            </tr>
-                        </thead>
-                        <tbody id="riderPivotBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Bad performance Table (Right Side - Filtered ZP >= 9%) -->
-            <div class="pivot-container">
-                <div class="pivot-header">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <strong>Bad performance</strong>
-                        <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadTable('bad')">⬇ Download</button>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table id="bottomRiderTable">
-                        <thead>
-                            <tr>
-                                <th>Rider Name</th>
-                                <th>Total Orders</th>
-                                <th>Seller</th>
-                                <th>DSR %</th>
-                                <th>Unpick</th>
-                                <th>ZP %</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bottomRiderBody"></tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card" style="border-top-color: #f39c12;">
+            <h3>C2 ZP Sellers</h3>
+            <p id="c2FilteredZpSellersCount">0</p>
         </div>
-
-        <!-- Hub Performance Summary Section -->
-        <div class="section-title">🏢 Hub Performance Summary</div>
-        <div class="pivot-container" style="grid-column: 1 / -1; margin-top: 15px;">
+        <div class="card">
+            <h3>C2 ZP %</h3>
+            <p id="c2ZpPercent">0%</p>
+        </div>
+        <div class="card">
+            <h3>Total OFP Count</h3>
+            <p id="ofpTotalCount">0</p>
+            <button id="downloadOfpBtn" class="download-btn" style="display: none;">⬇ Download OFP</button>
+        </div>
+        <div class="card">
+            <h3>OFP %</h3>
+            <p id="ofpPercentage">0%</p>
+        </div>
+        <div class="card" style="border-top-color: #e74c3c;">
+            <h3>NOT OFP %</h3>
+            <p id="notOfpPercentage">0%</p>
+            <button id="downloadNotOfpBtn" class="download-btn" style="display: none; background-color: #e74c3c;">⬇ Download Not OFP</button>
+        </div>
+    </div>
+    
+    <!-- Rider Performance Section with Pivot Table & Bottom Riders Side-by-Side -->
+    <div class="section-title">🚴 Rider Performance Analytics</div>
+    
+    <div class="tables-wrapper" id="tablesWrapper">
+        <!-- Best performance Table (Left Side - Filtered ZP < 9%) -->
+        <div class="pivot-container">
             <div class="pivot-header">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <strong>Hub Name Performance (Click Connected to edit)</strong>
-                    <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadHubActivity()">⬇ Download Hub Report</button>
+                    <strong>Best performance</strong>
+                    <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadTable('best')">⬇ Download</button>
                 </div>
-                <input type="text" id="hubSearch" class="pivot-search" placeholder="Search hub..." onkeyup="filterHubTable()">
+                <input type="text" id="riderSearch" class="pivot-search" placeholder="Search rider..." onkeyup="filterRiderTable()">
             </div>
             <div class="table-responsive">
-                <table id="hubActivityTable">
+                <table id="riderPivotTable">
                     <thead>
                         <tr>
-                            <th>Hub Name</th>
-                            <th>Orders</th>
-                            <th>Ofp</th>
-                            <th>Picked</th>
-                            <th>Picked%</th>
-                            <th>Received</th>
-                            <th>Received%</th>
-                            <th>Connected</th>
-                            <th>Connected%</th>
-                            <th>Pending Load</th>
-                            <th>Zero Pick %</th>
+                            <th onclick="sortTable(0)">Rider Name ⬍</th>
+                            <th onclick="sortTable(1)">Total Orders ⬍</th>
+                            <th onclick="sortTable(2)">Seller ⬍</th>
+                            <th onclick="sortTable(3)">DSR % ⬍</th>
+                            <th onclick="sortTable(4)">Unpick ⬍</th>
+                            <th onclick="sortTable(5)">ZP % ⬍</th>
                         </tr>
                     </thead>
-                    <tbody id="hubActivityBody">
-                        <tr><td colspan="12" style="text-align: center; color: #777; width: 100%;">Please upload an Excel file to view hub performance data.</td></tr>
-                    </tbody>
+                    <tbody id="riderPivotBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Manual AWB Entry Section -->
-        <div class="manual-entry-section">
-            <div class="section-title" style="margin-top:0; border-bottom: none; font-size: 16px;">✍️ Manual AWB Entry & Download</div>
-            <div class="manual-form-group">
-                <input type="text" id="manualAwbInput" placeholder="Enter AWB Number and press Enter..." onkeydown="handleAwbKeyDown(event)">
-                <button class="action-excel-btn" onclick="addManualEntry()">➕ Add AWB</button>
-                <button class="action-excel-btn" style="background-color: #2980b9;" onclick="downloadManualData()">⬇ Download AWB List</button>
+        <!-- Bad performance Table (Right Side - Filtered ZP >= 9%) -->
+        <div class="pivot-container">
+            <div class="pivot-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong>Bad performance</strong>
+                    <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadTable('bad')">⬇ Download</button>
+                </div>
             </div>
             <div class="table-responsive">
-                <table id="manualDataTable">
+                <table id="bottomRiderTable">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>AWB Number</th>
-                            <th>Action</th>
+                            <th>Rider Name</th>
+                            <th>Total Orders</th>
+                            <th>Seller</th>
+                            <th>DSR %</th>
+                            <th>Unpick</th>
+                            <th>ZP %</th>
                         </tr>
                     </thead>
-                    <tbody id="manualDataBody">
-                        <tr><td colspan="3" style="text-align: center; color: #777;">No AWB numbers added yet.</td></tr>
-                    </tbody>
+                    <tbody id="bottomRiderBody"></tbody>
                 </table>
             </div>
         </div>
+    </div>
 
-        <!-- Upload Section at the Bottom -->
-        <div class="upload-section">
-            <!-- Action Buttons Container (Dynamically Rendered) -->
-            <div class="action-buttons-container" id="actionButtonsContainer"></div>
-
-            <h4>Upload Excel File</h4>
-            <input type="file" id="excelFile" accept=".xlsx, .xls">
-            <div id="errorMessage" class="error"></div>
-            
-            <!-- Link Manager / Editor & Add New Button Panel -->
-            <div class="link-config-section">
-                <label>⚙️ Manage & Add Button Links:</label>
-                <select id="linkSelector" onchange="onLinkSelectorChange()">
-                    <!-- Populated dynamically -->
-                </select>
-                <input type="text" id="linkInputUrl" placeholder="Enter or update URL here..." style="width: 220px;">
-                <button onclick="saveButtonLink()">Update Link</button>
-                <br><br>
-                <label style="border-top: 1px dashed var(--border-color); padding-top: 6px;">➕ Add New Custom Button:</label>
-                <input type="text" id="newButtonKey" placeholder="Button ID (e.g. report3)" style="width: 110px;">
-                <input type="text" id="newButtonTitle" placeholder="Button Title (e.g. 📈 Weekly Report)" style="width: 140px;">
-                <input type="text" id="newButtonUrl" placeholder="Button URL" style="width: 180px;">
-                <button onclick="addNewCustomButton()">Add Button</button>
+    <!-- Hub Performance Summary Section -->
+    <div class="section-title">🏢 Hub Performance Summary</div>
+    <div class="pivot-container" style="grid-column: 1 / -1; margin-top: 15px;">
+        <div class="pivot-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <strong>Hub Name Performance (Click Connected to edit)</strong>
+                <button class="action-excel-btn" style="padding: 4px 10px; font-size: 11px;" onclick="downloadHubActivity()">⬇ Download Hub Report</button>
             </div>
+            <input type="text" id="hubSearch" class="pivot-search" placeholder="Search hub..." onkeyup="filterHubTable()">
         </div>
+        <div class="table-responsive">
+            <table id="hubActivityTable">
+                <thead>
+                    <tr>
+                        <th>Hub Name</th>
+                        <th>Orders</th>
+                        <th>Ofp</th>
+                        <th>Ofp%</th>
+                        <th>Picked</th>
+                        <th>Picked%</th>
+                        <th>Received</th>
+                        <th>Received%</th>
+                        <th>Connected</th>
+                        <th>Connected%</th>
+                        <th>Pending Load</th>
+                        <th>Zero Pick %</th>
+                    </tr>
+                </thead>
+                <tbody id="hubActivityBody">
+                    <tr><td colspan="12" style="text-align: center; color: #777; width: 100%;">Please upload an Excel file to view hub performance data.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+    <!-- Manual AWB Entry Section -->
+    <div class="manual-entry-section">
+        <div class="section-title" style="margin-top:0; border-bottom: none; font-size: 16px;">✍️ Manual AWB Entry & Download</div>
+        <div class="manual-form-group">
+            <input type="text" id="manualAwbInput" placeholder="Enter AWB Number and press Enter..." onkeydown="handleAwbKeyDown(event)">
+            <button class="action-excel-btn" onclick="addManualEntry()">➕ Add AWB</button>
+            <button class="action-excel-btn" style="background-color: #2980b9;" onclick="downloadManualData()">⬇ Download AWB List</button>
+        </div>
+        <div class="table-responsive">
+            <table id="manualDataTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>AWB Number</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="manualDataBody">
+                    <tr><td colspan="3" style="text-align: center; color: #777;">No AWB numbers added yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Upload Section at the Bottom -->
+    <div class="upload-section">
+        <!-- Action Buttons Container (Dynamically Rendered) -->
+        <div class="action-buttons-container" id="actionButtonsContainer"></div>
+
+        <h4>Upload Excel File</h4>
+        <input type="file" id="excelFile" accept=".xlsx, .xls">
+        <div id="errorMessage" class="error"></div>
+        
+        <!-- Link Manager / Editor & Add New Button Panel -->
+        <div class="link-config-section">
+            <label>⚙️ Manage & Add Button Links:</label>
+            <select id="linkSelector" onchange="onLinkSelectorChange()">
+                <!-- Populated dynamically -->
+            </select>
+            <input type="text" id="linkInputUrl" placeholder="Enter or update URL here..." style="width: 220px;">
+            <button onclick="saveButtonLink()">Update Link</button>
+            <br><br>
+            <label style="border-top: 1px dashed var(--border-color); padding-top: 6px;">➕ Add New Custom Button:</label>
+            <input type="text" id="newButtonKey" placeholder="Button ID (e.g. report3)" style="width: 110px;">
+            <input type="text" id="newButtonTitle" placeholder="Button Title (e.g. 📈 Weekly Report)" style="width: 140px;">
+            <input type="text" id="newButtonUrl" placeholder="Button URL" style="width: 180px;">
+            <button onclick="addNewCustomButton()">Add Button</button>
+        </div>
     </div>
 </div>
 
@@ -647,9 +658,9 @@
     let globalZpPercentage = "0%";
     let sortDirection = false;
 
-    // Login Authentication Logic
-    const VALID_USER = "9664045455";
-    const VALID_PASS = "yashu15@";
+    // Login Authentication Logic (Change username & password here)
+    const VALID_USER = "admin";
+    const VALID_PASS = "shadowfax123";
 
     function handleLoginKeyDown(event) {
         if (event.key === 'Enter') {
@@ -674,13 +685,11 @@
     function showDashboard() {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('mainDashboard').style.display = 'block';
-        document.getElementById('logoutBtn').style.display = 'inline-block';
     }
 
     function logout() {
         localStorage.removeItem('dashboard_logged_in');
         document.getElementById('mainDashboard').style.display = 'none';
-        document.getElementById('logoutBtn').style.display = 'none';
         document.getElementById('loginScreen').style.display = 'flex';
         document.getElementById('loginUser').value = '';
         document.getElementById('loginPass').value = '';
@@ -701,11 +710,11 @@
 
     let buttonLinks = JSON.parse(localStorage.getItem('dashboard_custom_links')) || {
         hub: { title: "🌐 Shadowfax Hub", url: "https://ecomnew.shadowfax.in/dashboard/hub" },
-        lcv: { title: "📊 LCV Excel", url: "https://docs.google.com/spreadsheets/d/1Xwrct_TttWUrZxNePxwjY7QD4i3iwx7YkEQBaINxieE/edit?gid=625139842#gid=625139842" },
-        adoc: { title: "📁 Adoc Excel", url: "https://docs.google.com/spreadsheets/d/1bkf0ilrg-LVnu6dIs1Q_iZFZY7TnsrNE8NPYwiuw_Nk/edit?gid=574312713#gid=574312713" },
-        adock_lcv: { title: "🚚 Adock LCV", url: "https://docs.google.com/forms/d/e/1FAIpQLScLxnDRPodWzK3JcuXlkaQWBy6RsHBBqmxL8jQZYi3HK7zP3g/viewform?pli=1&pli=1" },
-        tl: { title: "👤 TL Detail", url: "https://docs.google.com/spreadsheets/d/1nuJtN-F_ZxAlCpsbUj5rJiu-F8X2ri19HV5lavn65ro/edit?gid=0#gid=0" },
-        pincode: { title: "📍 Pincode", url: "https://docs.google.com/spreadsheets/d/11GOwW_E1cLENWDraYZsuE0cq1EY5WDQIx2kShgihpeI/edit?gid=0#gid=0" }
+        lcv: { title: "📊 LCV Excel", url: "https://docs.google.com/spreadsheets/" },
+        adoc: { title: "📁 Adoc Excel", url: "https://docs.google.com/spreadsheets/" },
+        adock_lcv: { title: "🚚 Adock LCV", url: "https://docs.google.com/spreadsheets/" },
+        tl: { title: "👤 TL Detail", url: "https://docs.google.com/spreadsheets/" },
+        pincode: { title: "📍 Pincode", url: "https://docs.google.com/spreadsheets/" }
     };
 
     Object.keys(buttonLinks).forEach(k => {
