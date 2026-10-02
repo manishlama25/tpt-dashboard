@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pickup Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#f3f5f3;--card:#fff;--ink:#17212b;--mute:#667380;--line:#dce2de;--acc:#0f766e;--acc2:#e3f1ee;--bar:#a6d6cf;--warn:#b45309}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1519;--card:#161e24;--ink:#e6ecf0;--mute:#8b98a3;--line:#27323a;--acc:#4fc3b7;--acc2:#143029;--bar:#1f5a54;--warn:#f0a050}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 'IBM Plex Sans',system-ui,sans-serif;padding:16px;font-variant-numeric:tabular-nums}
+button,select,input{font:inherit;color:inherit}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+h1{font-size:20px;font-weight:600;margin:0 auto 0 0}
+#fname{color:var(--mute);margin-left:auto}
+.ep{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;padding:12px}
+.ep h4{margin:0 0 6px;font-size:13px;font-weight:500;color:var(--mute)}
+.ep .fl{max-height:240px;margin:0}
+.panel{margin-bottom:12px}
+#top{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:14px}
+#ttl{margin:0;outline:none;border-bottom:1px dashed transparent;padding:2px 0;min-width:120px;cursor:text}
+#ttl:hover,#ttl:focus{border-bottom-color:var(--acc)}
+#lks{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto}
+.le{display:flex;gap:4px;align-items:center}
+.le input{width:150px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:20px;line-height:1;padding:0 4px}
+.x:hover{color:var(--warn)}
+a.btn{text-decoration:none;display:inline-block}
+@media(prefers-color-scheme:dark){.btn.p{color:#06231f}}
+.btn{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:7px 12px;cursor:pointer}
+.btn.p{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn:hover{border-color:var(--acc)}
+.btn:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+select,input[type=search],.fb input[type=text]{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+#drop{border:2px dashed var(--line);border-radius:10px;padding:56px 20px;text-align:center;color:var(--mute);background:var(--card)}
+#drop.over{border-color:var(--acc);background:var(--acc2)}
+#drop b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+#app{display:none}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-bottom:12px}
+#filters{display:contents}
+details.f{position:relative}
+details.f>summary{list-style:none;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 10px;display:flex;gap:8px}
+details.f>summary::-webkit-details-marker{display:none}
+details.f[open]>summary{border-color:var(--acc)}
+.s{color:var(--mute)}
+details.f.on>summary{background:var(--acc2);border-color:var(--acc)}
+details.f.on .s{color:var(--acc);font-weight:600}
+.fb{position:absolute;z-index:5;top:100%;left:0;margin-top:4px;width:260px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.fb input[type=text]{width:100%;margin-bottom:6px}
+.fl{max-height:220px;overflow:auto;margin-bottom:6px}
+.fl label{display:flex;gap:6px;padding:3px 2px;cursor:pointer;align-items:center}
+.fl label span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fl i{font-style:normal;color:var(--mute)}
+.fb button{background:none;border:0;color:var(--acc);cursor:pointer;padding:2px 4px}
+.kpis{display:flex;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:14px}
+.kpi{flex:1 1 130px;padding:12px 16px;border-right:1px solid var(--line)}
+.kpi:last-child{border-right:0}
+.kpi .v{font-size:26px;font-weight:600;line-height:1.1}
+.kpi .l{color:var(--mute)}
+.kpi.hl .v{color:var(--acc)}
+.kpi.warn .v{color:var(--warn)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:14px;margin-bottom:14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ph{display:flex;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.ph span{color:var(--mute)}
+.gt{max-height:340px;overflow:auto}
+table{border-collapse:collapse;width:100%}
+th,td{padding:6px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{position:sticky;top:0;background:var(--card);color:var(--mute);font-weight:500;z-index:1}
+.gt tr[data-v]{cursor:pointer}
+.gt tr[data-v]:hover{background:var(--acc2)}
+.gt tr.on{background:var(--acc2);box-shadow:inset 3px 0 0 var(--acc)}
+.gt td:first-child{max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.bw{width:30%;min-width:60px}
+.bw b{display:block;height:8px;background:var(--bar);border-radius:2px}
+.gt td:nth-child(n+3),.gt th:nth-child(n+3){text-align:right}
+.dt{max-height:520px;overflow:auto}
+#tbl th{cursor:pointer;user-select:none}
+.pg{display:flex;gap:8px;align-items:center;padding:8px 12px;border-top:1px solid var(--line)}
+.pg span{margin-right:auto;color:var(--mute)}
+.cols{position:relative}
+.cols .fb{width:240px;right:0;left:auto}
+.empty{padding:20px;color:var(--mute);text-align:center}
+</style>
+</head>
+<body>
+<div id="top">
+  <h1 id="ttl" contenteditable="true" spellcheck="false" title="Click karke naam badlein"></h1>
+  <div id="lks"></div>
+  <button class="btn" id="el">✎ Edit links</button>
+</div>
+
+<header>
+  <button class="btn" id="ed" hidden>✎ Edit</button>
+  <span id="fname"></span>
+  <select id="sheet" hidden aria-label="Sheet"></select>
+  <button class="btn p" id="up">Upload Excel</button>
+  <button class="btn" id="xl" hidden>Download filtered Excel</button>
+  <input type="file" id="file" accept=".xlsx,.xls,.xlsm,.csv" hidden>
+</header>
+
+<div id="drop"><b>Excel file upload karein</b>.xlsx, .xls ya .csv file yahan drop karein, ya "Upload Excel" dabayein. Data sirf aapke browser mein rehta hai.</div>
+
+<div id="app">
+  <section class="panel" id="edp" hidden>
+    <div class="ph">Edit dashboard<span>Tick = dikhao, untick = hide</span></div>
+    <div class="ep">
+      <div><h4>Filters</h4><div class="fl" id="edf"></div></div>
+      <div><h4>KPI cards</h4><div class="fl" id="edk"></div></div>
+      <div><h4>Sections</h4><div class="fl"><label><input type="checkbox" id="edt"><span>Orders table</span></label></div></div>
+    </div>
+  </section>
+  <div class="bar">
+    <input type="search" id="q" placeholder="Search AWB, rider, seller..." aria-label="Search" style="min-width:220px">
+    <div id="filters"></div>
+    <select id="addf" aria-label="Add filter"></select>
+    <button class="btn" id="clr">Clear all</button>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <section class="panel" id="g1"><div class="ph">Break down by <select></select><span></span></div><div class="gt"></div></section>
+    <section class="panel" id="g2"><div class="ph">Break down by <select></select><span></span></div><div class="gt"></div></section>
+  </div>
+
+  <section class="panel" id="tsec" hidden>
+    <div class="ph">Orders<span id="cnt"></span>
+      <details class="f cols" style="margin-left:auto"><summary>Columns</summary><div class="fb"><div class="fl" id="colbox"></div></div></details>
+    </div>
+    <div class="dt"><table id="tbl"></table></div>
+    <div class="pg"><span id="pginfo"></span><button class="btn" id="pv">Prev</button><button class="btn" id="nx">Next</button></div>
+  </section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const PREF_F=['client','client_category','order_status','rider_name','attempt_type','Seller_Type','seller_name','Seller Flag'];
+const PREF_C=['awb_number','client','order_status','rider_name','seller_name','ageing','attempt_type','last_updated','picked'];
+const PS=50;
+/* Picked = in order_status ki values ke order. Yahan list badal sakte hain. */
+const PICKED_STATUS=['in transit','in manifest','bag received','received at dc','picked','received at pickup hub'];
+const hasP=()=>COLS.includes('order_status')||COLS.includes('picked');
+const isP=r=>COLS.includes('order_status')?PICKED_STATUS.includes(String(r.order_status).trim().toLowerCase()):!!(+r.picked);
+/* ZP seller = aisa seller jiska ek bhi order Picked nahi hai (current filter ke andar) */
+const mark=(m,r)=>{const s=String(r.seller_name);if(isP(r))m.set(s,1);else if(!m.has(s))m.set(s,0)};
+const zc=m=>{let z=0;m.forEach(v=>{if(!v)z++});return z};
+const HK=new Set();let KL=[];
+let wb,RAW=[],SK=[],COLS=[],F={},FC=[],VC=[],GB={},rows=[],q='',sc=null,sd=1,pg=0,CC={};
+
+const p2=n=>String(n).padStart(2,'0');
+const fmt=d=>`${p2(d.getDate())}-${p2(d.getMonth()+1)}-${d.getFullYear()} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=n=>Number(n).toLocaleString('en-IN');
+const count=c=>CC[c]||(CC[c]=RAW.reduce((m,r)=>{const v=String(r[c]);m.set(v,(m.get(v)||0)+1);return m},new Map()));
+
+/* ---------- upload ---------- */
+$('#up').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{if(e.target.files[0])readFile(e.target.files[0]);e.target.value=''};
+['dragover','dragenter'].forEach(t=>addEventListener(t,e=>{e.preventDefault();$('#drop').classList.add('over')}));
+['dragleave','drop'].forEach(t=>addEventListener(t,e=>{e.preventDefault();$('#drop').classList.remove('over')}));
+addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)readFile(f)});
+
+function readFile(f){
+  if(typeof XLSX==='undefined'){alert('Excel library load nahi hui. Internet check karein aur page refresh karein.');return}
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
+      $('#fname').textContent=f.name;
+      const s=$('#sheet');
+      s.innerHTML=wb.SheetNames.map((n,i)=>`<option value="${i}">${esc(n)}</option>`).join('');
+      s.hidden=wb.SheetNames.length<2;
+      useSheet(0);
+    }catch(err){alert('File read nahi ho payi: '+err.message)}
+  };
+  r.readAsArrayBuffer(f);
+}
+$('#sheet').onchange=e=>useSheet(+e.target.value);
+
+function useSheet(i){
+  const d=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[i]],{defval:''});
+  if(!d.length){alert('Is sheet mein data nahi mila.');return}
+  RAW=d;COLS=Object.keys(RAW[0]);CC={};F={};q='';sc=null;pg=0;$('#q').value='';
+  RAW.forEach(r=>{for(const k in r)if(r[k] instanceof Date)r[k]=fmt(r[k])});
+  SK=RAW.map(r=>Object.values(r).join('|').toLowerCase());
+  FC=PREF_F.filter(c=>COLS.includes(c)&&count(c).size>1);
+  if(!FC.length)FC=COLS.filter(c=>{const n=count(c).size;return n>1&&n<=50}).slice(0,6);
+  VC=PREF_C.filter(c=>COLS.includes(c));if(!VC.length)VC=COLS.slice(0,8);
+  const pick=(c,alt)=>COLS.includes(c)?c:COLS[alt]||COLS[0];
+  GB={g1:pick('client',0),g2:pick('rider_name',1)};
+  ['g1','g2'].forEach(id=>{const s=$('#'+id+' select');s.innerHTML=COLS.map(c=>`<option ${c===GB[id]?'selected':''}>${esc(c)}</option>`).join('');s.onchange=()=>{GB[id]=s.value;group(id)}});
+  $('#colbox').innerHTML=COLS.map(c=>`<label><input type="checkbox" value="${esc(c)}" ${VC.includes(c)?'checked':''}><span>${esc(c)}</span></label>`).join('');
+  $('#drop').style.display='none';$('#app').style.display='block';$('#xl').hidden=false;$('#ed').hidden=false;
+  buildFilters();update();buildEdit();
+}
+
+/* ---------- filters ---------- */
+function buildFilters(){
+  const box=$('#filters');box.innerHTML='';
+  FC.forEach(c=>{
+    const d=document.createElement('details');d.className='f';d.dataset.c=c;
+    const m=[...count(c)].sort((a,b)=>b[1]-a[1]).slice(0,300);
+    d.innerHTML=`<summary><span>${esc(c)}</span><span class="s">All</span></summary><div class="fb"><input type="text" placeholder="Search value" data-fs>
+      <div class="fl">${m.map(([v,n])=>`<label><input type="checkbox" value="${esc(v)}"><span>${esc(v)||'(blank)'}</span><i>${num(n)}</i></label>`).join('')}</div>
+      <button data-fx>Clear</button><button data-rm>Remove filter</button></div>`;
+    box.append(d);
+  });
+  $('#addf').innerHTML='<option value="">+ Add filter</option>'+COLS.filter(c=>!FC.includes(c)).map(c=>`<option>${esc(c)}</option>`).join('');
+  syncChecks();
+}
+function syncChecks(){
+  document.querySelectorAll('#edf input').forEach(i=>i.checked=FC.includes(i.value));
+  document.querySelectorAll('details.f[data-c]').forEach(d=>{
+    const c=d.dataset.c,s=F[c];
+    d.querySelectorAll('.fl input').forEach(i=>i.checked=!!s&&s.has(i.value));
+  });
+}
+$('#filters').addEventListener('change',e=>{
+  const i=e.target,d=i.closest('details');if(i.type!=='checkbox')return;
+  const c=d.dataset.c;F[c]=F[c]||new Set();
+  i.checked?F[c].add(i.value):F[c].delete(i.value);update();
+});
+$('#filters').addEventListener('input',e=>{
+  if(!e.target.matches('[data-fs]'))return;
+  const t=e.target.value.toLowerCase();
+  e.target.closest('.fb').querySelectorAll('.fl label').forEach(l=>l.style.display=l.textContent.toLowerCase().includes(t)?'':'none');
+});
+$('#filters').addEventListener('click',e=>{
+  const d=e.target.closest('details');if(!d)return;const c=d.dataset.c;
+  if(e.target.matches('[data-fx]')){delete F[c];syncChecks();update()}
+  if(e.target.matches('[data-rm]')){delete F[c];FC=FC.filter(x=>x!==c);buildFilters();update()}
+});
+$('#addf').onchange=e=>{const c=e.target.value;if(!c)return;FC.push(c);buildFilters();document.querySelector(`details.f[data-c="${CSS.escape(c)}"]`).open=true};
+$('#clr').onclick=()=>{F={};q='';$('#q').value='';syncChecks();update()};
+let tm;$('#q').oninput=e=>{clearTimeout(tm);tm=setTimeout(()=>{q=e.target.value.toLowerCase().trim();update()},150)};
+
+/* ---------- core ---------- */
+function update(){
+  const ks=Object.keys(F).filter(c=>F[c].size);
+  rows=[];
+  for(let i=0;i<RAW.length;i++){
+    let ok=true;
+    for(const c of ks){if(!F[c].has(String(RAW[i][c]))){ok=false;break}}
+    if(ok&&q&&!SK[i].includes(q))ok=false;
+    if(ok)rows.push(i);
+  }
+  pg=0;kpis();group('g1');group('g2');table();
+  document.querySelectorAll('details.f[data-c]').forEach(d=>{
+    const n=F[d.dataset.c]?F[d.dataset.c].size:0;
+    d.classList.toggle('on',n>0);d.querySelector('.s').textContent=n?n+' selected':'All';
+  });
+}
+
+function kpis(){
+  const R=rows.map(i=>RAW[i]),k=[['Total Orders',num(R.length),R.length<RAW.length?'of '+num(RAW.length):'']];
+  if(hasP()){
+    const p=R.reduce((a,r)=>a+(isP(r)?1:0),0);
+    k.push(['Picked',num(p)],['Pending',num(R.length-p)],['Pick %',R.length?(p*100/R.length).toFixed(1)+'%':'-','hl']);
+  }
+  const u=(c,l)=>COLS.includes(c)&&k.push([l,num(new Set(R.map(r=>r[c])).size)]);
+  u('rider_name','Riders');u('seller_name','Sellers');
+  if(hasP()&&COLS.includes('seller_name')){const sm=new Map();R.forEach(r=>mark(sm,r));const z=zc(sm);k.push(['ZP Sellers',num(z)],['ZP %',sm.size?(z*100/sm.size).toFixed(1)+'%':'-','warn'])}
+  if(COLS.includes('attempt_type'))k.push(['Reattempts',num(R.filter(r=>r.attempt_type==='reattempt').length)]);
+  KL=k.map(x=>x[0]);
+  $('#kpis').innerHTML=k.filter(x=>!HK.has(x[0])).map(([l,v,x])=>`<div class="kpi ${x==='hl'||x==='warn'?x:''}"><div class="v">${v}</div><div class="l">${l}${x&&x!=='hl'&&x!=='warn'?' · '+x:''}</div></div>`).join('');
+}
+
+function group(id){
+  const col=GB[id],hp=hasP(),hz=hp&&COLS.includes('seller_name'),m=new Map();
+  for(const i of rows){
+    const r=RAW[i],v=String(r[col]);let o=m.get(v);
+    if(!o)m.set(v,o={n:0,p:0,s:new Map()});o.n++;if(hp&&isP(r))o.p++;if(hz)mark(o.s,r);
+  }
+  const a=[...m].sort((x,y)=>y[1].n-x[1].n),mx=a.length?a[0][1].n:1,act=F[col];
+  $('#'+id+' .ph span').textContent=a.length+' values';
+  $('#'+id+' .gt').innerHTML=a.length?`<table><thead><tr><th>${esc(col)}</th><th></th><th>Orders</th>${hp?'<th>Picked</th><th>Pick %</th>':''}${hz?'<th>ZP Sellers</th><th>ZP %</th>':''}</tr></thead><tbody>`+
+    a.slice(0,300).map(([v,o])=>`<tr data-v="${esc(v)}" class="${act&&act.has(v)?'on':''}"><td title="${esc(v)}">${esc(v)||'(blank)'}</td><td class="bw"><b style="width:${o.n/mx*100}%"></b></td><td>${num(o.n)}</td>${hp?`<td>${num(o.p)}</td><td>${(o.p*100/o.n).toFixed(0)}%</td>`:''}${hz?(()=>{const z=zc(o.s);return `<td>${num(z)}</td><td>${(z*100/o.s.size).toFixed(0)}%</td>`})():''}</tr>`).join('')+'</tbody></table>':'<div class="empty">No data for current filters</div>';
+}
+['g1','g2'].forEach(id=>$('#'+id+' .gt').addEventListener('click',e=>{
+  const tr=e.target.closest('tr[data-v]');if(!tr)return;
+  const c=GB[id],v=tr.dataset.v;
+  F[c]=F[c]||new Set();F[c].has(v)?F[c].delete(v):F[c].add(v);
+  if(!FC.includes(c)){FC.push(c);buildFilters()}else syncChecks();
+  update();
+}));
+
+function table(){
+  let a=rows;
+  if(sc)a=[...rows].sort((x,y)=>{
+    const p=RAW[x][sc],r=RAW[y][sc];
+    return (typeof p==='number'&&typeof r==='number'?p-r:String(p).localeCompare(String(r),undefined,{numeric:true}))*sd;
+  });
+  const tp=Math.max(1,Math.ceil(a.length/PS));if(pg>=tp)pg=tp-1;
+  const s=a.slice(pg*PS,pg*PS+PS);
+  $('#tbl').innerHTML='<thead><tr>'+VC.map(c=>`<th data-s="${esc(c)}">${esc(c)}${sc===c?(sd>0?' ▲':' ▼'):''}</th>`).join('')+'</tr></thead><tbody>'+
+    s.map(i=>'<tr>'+VC.map(c=>`<td>${esc(RAW[i][c])}</td>`).join('')+'</tr>').join('')+'</tbody>';
+  $('#cnt').textContent=num(rows.length)+' rows';
+  $('#pginfo').textContent=rows.length?`${num(pg*PS+1)}–${num(Math.min(rows.length,pg*PS+PS))} of ${num(rows.length)}`:'No rows match';
+  $('#pv').disabled=pg===0;$('#nx').disabled=pg>=tp-1;
+}
+$('#tbl').addEventListener('click',e=>{const h=e.target.closest('th[data-s]');if(!h)return;const c=h.dataset.s;sd=sc===c?-sd:1;sc=c;table()});
+$('#pv').onclick=()=>{pg--;table()};
+$('#nx').onclick=()=>{pg++;table()};
+$('#colbox').addEventListener('change',()=>{VC=[...document.querySelectorAll('#colbox input:checked')].map(i=>i.value);table()});
+
+/* ---------- edit panel (hidden by default) ---------- */
+function buildEdit(){
+  $('#edf').innerHTML=COLS.map(c=>`<label><input type="checkbox" value="${esc(c)}" ${FC.includes(c)?'checked':''}><span>${esc(c)}</span></label>`).join('');
+  $('#edk').innerHTML=KL.map(l=>`<label><input type="checkbox" value="${esc(l)}" ${HK.has(l)?'':'checked'}><span>${esc(l)}</span></label>`).join('');
+}
+$('#ed').onclick=()=>{const p=$('#edp');p.hidden=!p.hidden};
+$('#edt').onchange=e=>{$('#tsec').hidden=!e.target.checked};
+$('#edf').addEventListener('change',e=>{
+  const c=e.target.value;
+  if(e.target.checked){if(!FC.includes(c))FC.push(c)}else{FC=FC.filter(x=>x!==c);delete F[c]}
+  buildFilters();update();
+});
+$('#edk').addEventListener('change',e=>{const l=e.target.value;e.target.checked?HK.delete(l):HK.add(l);kpis()});
+
+$('#xl').onclick=()=>{
+  const w=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(w,XLSX.utils.json_to_sheet(rows.map(i=>RAW[i]),{header:COLS}),'Filtered');
+  XLSX.writeFile(w,'filtered_data.xlsx');
+};
+
+/* ---------- top row: editable title + link buttons ---------- */
+let TT='JAI_TPT_Nagar_FM',LK=[{t:'Link 1',u:''},{t:'Link 2',u:''}],lkEdit=false;
+try{const d=JSON.parse(localStorage.getItem('pd_top'));if(d){TT=d.TT||TT;LK=Array.isArray(d.LK)?d.LK:LK}}catch(e){}
+const saveTop=()=>{try{localStorage.setItem('pd_top',JSON.stringify({TT,LK}))}catch(e){}};
+const fixUrl=u=>{u=String(u).trim();return /^(javascript|data):/i.test(u)?'#':/^[a-z][a-z0-9+.-]*:/i.test(u)?u:'https://'+u};
+function renderTop(){
+  if($('#ttl').textContent!==TT)$('#ttl').textContent=TT;
+  document.title=TT||'Dashboard';
+  $('#lks').innerHTML=lkEdit
+    ?LK.map((l,i)=>`<div class="le"><input data-i="${i}" data-k="t" value="${esc(l.t)}" placeholder="Button name" aria-label="Button name"><input data-i="${i}" data-k="u" value="${esc(l.u)}" placeholder="https://link" aria-label="Link"><button class="x" data-del="${i}" title="Remove" aria-label="Remove button">×</button></div>`).join('')+'<button class="btn" id="addl">+ Add button</button>'
+    :LK.map(l=>l.u?`<a class="btn p" href="${esc(fixUrl(l.u))}" target="_blank" rel="noopener">${esc(l.t)}</a>`:`<button class="btn" data-open="1" title="Link set nahi hai, click karke add karein">${esc(l.t)}</button>`).join('');
+  $('#el').textContent=lkEdit?'✓ Done':'✎ Edit links';
+}
+$('#ttl').addEventListener('input',e=>{TT=e.target.textContent;document.title=TT||'Dashboard';saveTop()});
+$('#ttl').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}});
+$('#ttl').addEventListener('paste',e=>{e.preventDefault();document.execCommand('insertText',false,e.clipboardData.getData('text/plain').replace(/\s+/g,' '))});
+$('#el').onclick=()=>{lkEdit=!lkEdit;renderTop()};
+$('#lks').addEventListener('input',e=>{const t=e.target;if(t.dataset.k){LK[+t.dataset.i][t.dataset.k]=t.value;saveTop()}});
+$('#lks').addEventListener('click',e=>{
+  const t=e.target;
+  if(t.dataset.del!==undefined){LK.splice(+t.dataset.del,1);saveTop();renderTop()}
+  else if(t.id==='addl'){LK.push({t:'New button',u:''});saveTop();renderTop();const n=document.querySelectorAll('#lks input[data-k=t]');n[n.length-1].focus();n[n.length-1].select()}
+  else if(t.dataset.open){lkEdit=true;renderTop()}
+});
+renderTop();
+</script>
+</body>
+</html>
